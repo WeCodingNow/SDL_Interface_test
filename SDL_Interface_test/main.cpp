@@ -11,6 +11,7 @@ const int WIDTH = 800, HEIGHT = 600;
 struct mainWindow
 {
 	SDL_Window* _window;
+	Uint32 userDefinedEvent;
 	std::vector<Button> buttons;
 	std::vector<DNDButton> dndButtons;
 	std::vector<InterfaceElement> images;
@@ -18,9 +19,16 @@ struct mainWindow
 
 void SetUpMainWindow()
 {
+	mainWindow.userDefinedEvent = SDL_RegisterEvents(1); //создаём определённое пользователем событие и сохраняем его тип, чтобы потом использовать в кнопках.
+
 	mainWindow.buttons.push_back(Button(mainWindow._window)); //создаём все кнопки
 	mainWindow.buttons.push_back(Button(mainWindow._window, 200, 0));
+
+	mainWindow.buttons[0].setMainFunction("one", mainWindow.userDefinedEvent);
+	mainWindow.buttons[1].setMainFunction("one", mainWindow.userDefinedEvent);
+
 	mainWindow.dndButtons.push_back(DNDButton(mainWindow._window, 300, 0));
+	mainWindow.dndButtons.push_back(DNDButton(mainWindow._window, 500, 0));
 
 	mainWindow.images.push_back(InterfaceElement(mainWindow._window, 300, 300, 200, 200, "TheSun.bmp"));
 }
@@ -97,6 +105,7 @@ int main(int argc, char* argv[])
 					{
 						draggedButton = &i;
 						draggedButton->RememberOffset(mouseX, mouseY);
+						break;
 					}
 				}
 				if (draggedButton == NULL) //мы же не хотим нажать на передвигаемую кнопку И кнопку за ней?
@@ -106,13 +115,11 @@ int main(int argc, char* argv[])
 						if (i.CheckIfClicked(mouseX, mouseY))
 						{
 							pressedButton = &i;
+							break;
 						}
 					}
 				}
-
-
 				RedrawMainWindow();
-
 			}
 
 			if (windowEvent.type == SDL_MOUSEMOTION)
@@ -138,6 +145,17 @@ int main(int argc, char* argv[])
 					draggedButton = NULL;
 				}
 				RedrawMainWindow();
+			}
+
+			if (windowEvent.type == mainWindow.userDefinedEvent)
+			{
+				if (windowEvent.user.code == mainWindow.buttons[0].GetCode())
+				{
+					SDL_ShowSimpleMessageBox(NULL, "Kondrat lox", "Nazhata pervaya knopka", mainWindow._window);
+					continue;
+				}
+				SDL_ShowSimpleMessageBox(NULL, "Kondrat lox", "Nazhata knopka", mainWindow._window);
+				
 			}
 
 		}
