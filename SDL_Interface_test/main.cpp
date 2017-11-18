@@ -24,8 +24,9 @@ struct mainWindow
 
 void SetUpMainWindow()
 {
+
 	
-	mainWindow.userDefinedEvent = SDL_RegisterEvents(1); //создаём определённое пользователем событие и сохраняем его тип, чтобы потом использовать в кнопках.
+	mainWindow.userDefinedEvent = SDL_RegisterEvents(1); //пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
 
 	mainWindow._renderer = SDL_GetRenderer(mainWindow._window);
 	mainWindow._rm = new ResourceManager(mainWindow._renderer);
@@ -33,7 +34,6 @@ void SetUpMainWindow()
 	mainWindow.images.push_back(new Image(mainWindow._renderer, mainWindow._rm->LoadImage("TheSun.bmp"), 300, 300, 300, 300));
 	mainWindow.elements.push_back((UIObject*)(mainWindow.buttons[0]));
 	mainWindow.elements.push_back((UIObject*)(mainWindow.images[0]));
-
 	mainWindow.buttons[0]
 ->AddPressedImage(mainWindow._rm->LoadImage("Button_pressed.bmp"));
 	
@@ -99,6 +99,7 @@ int main(int argc, char* argv[])
 				for (auto &i : mainWindow.elements)
 				{
 					i->Update();
+
 				}
 
 				RedrawMainWindow();
@@ -109,7 +110,7 @@ int main(int argc, char* argv[])
 				RedrawMainWindow();
 			}
 
-			if (windowEvent.type == SDL_MOUSEBUTTONUP) //нам нужно обновлять графику кнопок только когда мы на чё-то нажали
+			if (windowEvent.type == SDL_MOUSEBUTTONUP) //Г­Г Г¬ Г­ГіГ¦Г­Г® Г®ГЎГ­Г®ГўГ«ГїГІГј ГЈГ°Г ГґГЁГЄГі ГЄГ­Г®ГЇГ®ГЄ ГІГ®Г«ГјГЄГ® ГЄГ®ГЈГ¤Г  Г¬Г» Г­Г  Г·Вё-ГІГ® Г­Г Г¦Г Г«ГЁ
 			{
 				for (auto &i : mainWindow.buttons)
 					i->Unclick();
