@@ -19,9 +19,9 @@ struct mainWindow
 
 void SetUpMainWindow()
 {
-	mainWindow.userDefinedEvent = SDL_RegisterEvents(1); //создаём определённое пользователем событие и сохраняем его тип, чтобы потом использовать в кнопках.
+	mainWindow.userDefinedEvent = SDL_RegisterEvents(1); //СЃСѓРєР° Р±Р»СЏС‚СЊ РіРґРµ РєРѕРјРјРµРЅС‚С‹ Г±Г®Г§Г¤Г ВёГ¬ Г®ГЇГ°ГҐГ¤ГҐГ«ВёГ­Г­Г®ГҐ ГЇГ®Г«ГјГ§Г®ГўГ ГІГҐГ«ГҐГ¬ Г±Г®ГЎГ»ГІГЁГҐ ГЁ Г±Г®ГµГ°Г Г­ГїГҐГ¬ ГҐГЈГ® ГІГЁГЇ, Г·ГІГ®ГЎГ» ГЇГ®ГІГ®Г¬ ГЁГ±ГЇГ®Г«ГјГ§Г®ГўГ ГІГј Гў ГЄГ­Г®ГЇГЄГ Гµ.
 
-	mainWindow.buttons.push_back(Button(mainWindow._window)); //создаём все кнопки
+	mainWindow.buttons.push_back(Button(mainWindow._window)); //Г±Г®Г§Г¤Г ВёГ¬ ГўГ±ГҐ ГЄГ­Г®ГЇГЄГЁ
 	mainWindow.buttons.push_back(Button(mainWindow._window, 200, 0));
 
 	mainWindow.buttons[0].setMainFunction("one", mainWindow.userDefinedEvent);
@@ -48,7 +48,7 @@ void RedrawMainWindow()
 		i.Update();
 	}
 
-	for (auto i : mainWindow.dndButtons) //обновляем передвигаемые кнопки поверх статичных
+	for (auto i : mainWindow.dndButtons) //Г®ГЎГ­Г®ГўГ«ГїГҐГ¬ ГЇГҐГ°ГҐГ¤ГўГЁГЈГ ГҐГ¬Г»ГҐ ГЄГ­Г®ГЇГЄГЁ ГЇГ®ГўГҐГ°Гµ Г±ГІГ ГІГЁГ·Г­Г»Гµ
 	{
 		i.Update();
 	}
@@ -99,7 +99,7 @@ int main(int argc, char* argv[])
 			{
 				SDL_GetMouseState(&mouseX, &mouseY);
 
-				for (auto &i : mainWindow.dndButtons) //находим нажатую перетаскиваемую, перерисовываем все кнопки; можно будет оптимизировать
+				for (auto &i : mainWindow.dndButtons) //Г­Г ГµГ®Г¤ГЁГ¬ Г­Г Г¦Г ГІГіГѕ ГЇГҐГ°ГҐГІГ Г±ГЄГЁГўГ ГҐГ¬ГіГѕ, ГЇГҐГ°ГҐГ°ГЁГ±Г®ГўГ»ГўГ ГҐГ¬ ГўГ±ГҐ ГЄГ­Г®ГЇГЄГЁ; Г¬Г®Г¦Г­Г® ГЎГіГ¤ГҐГІ Г®ГЇГІГЁГ¬ГЁГ§ГЁГ°Г®ГўГ ГІГј
 				{
 					if (i.CheckIfClicked(mouseX, mouseY))
 					{
@@ -108,9 +108,9 @@ int main(int argc, char* argv[])
 						break;
 					}
 				}
-				if (draggedButton == NULL) //мы же не хотим нажать на передвигаемую кнопку И кнопку за ней?
+				if (draggedButton == NULL) //Г¬Г» Г¦ГҐ Г­ГҐ ГµГ®ГІГЁГ¬ Г­Г Г¦Г ГІГј Г­Г  ГЇГҐГ°ГҐГ¤ГўГЁГЈГ ГҐГ¬ГіГѕ ГЄГ­Г®ГЇГЄГі Г€ ГЄГ­Г®ГЇГЄГі Г§Г  Г­ГҐГ©?
 				{
-					for (auto &i : mainWindow.buttons) //находим нажатую кнопку, перерисовываем все кнопки; можно будет оптимизировать
+					for (auto &i : mainWindow.buttons) //Г­Г ГµГ®Г¤ГЁГ¬ Г­Г Г¦Г ГІГіГѕ ГЄГ­Г®ГЇГЄГі, ГЇГҐГ°ГҐГ°ГЁГ±Г®ГўГ»ГўГ ГҐГ¬ ГўГ±ГҐ ГЄГ­Г®ГЇГЄГЁ; Г¬Г®Г¦Г­Г® ГЎГіГ¤ГҐГІ Г®ГЇГІГЁГ¬ГЁГ§ГЁГ°Г®ГўГ ГІГј
 					{
 						if (i.CheckIfClicked(mouseX, mouseY))
 						{
@@ -132,7 +132,7 @@ int main(int argc, char* argv[])
 				}
 			}
 
-			if (windowEvent.type == SDL_MOUSEBUTTONUP) //нам нужно обновлять графику кнопок только когда мы на чё-то нажали
+			if (windowEvent.type == SDL_MOUSEBUTTONUP) //Г­Г Г¬ Г­ГіГ¦Г­Г® Г®ГЎГ­Г®ГўГ«ГїГІГј ГЈГ°Г ГґГЁГЄГі ГЄГ­Г®ГЇГ®ГЄ ГІГ®Г«ГјГЄГ® ГЄГ®ГЈГ¤Г  Г¬Г» Г­Г  Г·Вё-ГІГ® Г­Г Г¦Г Г«ГЁ
 			{
 				if (pressedButton != NULL)
 				{
