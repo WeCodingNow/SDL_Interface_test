@@ -72,3 +72,14 @@ void Button::Unclick()
 {
 	isClicked = false;
 }
+
+void DNDButton::RememberOffset(int X, int Y)
+{
+	offX = Pos.x - X; offY = Pos.y - Y;
+}
+
+void DNDButton::Move(int X, int Y)
+{
+	int mouseX = 0, mouseY = 0;
+	SDL_GetMouseState(&mouseX, &mouseY);
+}
