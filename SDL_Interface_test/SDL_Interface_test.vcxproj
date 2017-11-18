@@ -127,13 +127,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Button.cpp" />
-    <ClCompile Include="DNDButton.cpp" />
+    <ClCompile Include="IMovable.cpp" />
     <ClCompile Include="InterfaceElement.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ResourceManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Button.h" />
-    <ClInclude Include="DNDButton.h" />
+    <ClInclude Include="IMovable.h" />
+    <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="UserInterface.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

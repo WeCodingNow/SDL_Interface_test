@@ -1,4 +1,4 @@
-#include "DNDButton.h"
+#include "IMovable.h"
 
 DNDButton::DNDButton(SDL_Window* _mainWindow, int posX, int posY, int width, int height, const char* filename) : Button(_mainWindow, posX, posY, width, height, filename) {};
 

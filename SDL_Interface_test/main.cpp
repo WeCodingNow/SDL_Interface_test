@@ -1,10 +1,11 @@
 #include "UserInterface.h"
 #include "Button.h"
-#include "DNDButton.h"
+#include "IMovable.h"
 
 #include <iostream>
 #include <SDL.h>
 #include <vector>
+#include <algorithm>
 
 const int WIDTH = 800, HEIGHT = 600;
 
@@ -29,7 +30,7 @@ void SetUpMainWindow()
 
 	mainWindow.dndButtons.push_back(DNDButton(mainWindow._window, 300, 0));
 	mainWindow.dndButtons.push_back(DNDButton(mainWindow._window, 500, 0));
-
+	mainWindow.dndButtons.push_back(DNDButton(mainWindow._window, 300, 300, 200, 200, "TheSun.bmp"));
 	mainWindow.images.push_back(InterfaceElement(mainWindow._window, 300, 300, 200, 200, "TheSun.bmp"));
 }
 
@@ -53,8 +54,8 @@ void RedrawMainWindow()
 		i.Update();
 	}
 
-
 	SDL_UpdateWindowSurface(mainWindow._window);
+	
 }
 
 int main(int argc, char* argv[])
@@ -66,7 +67,6 @@ int main(int argc, char* argv[])
 
 	SDL_Window *window = SDL_CreateWindow("InterfaceTest", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, SDL_WINDOW_ALLOW_HIGHDPI);
 	SDL_Renderer *mainRender = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-
 
 
 	if (window == NULL)
@@ -85,6 +85,7 @@ int main(int argc, char* argv[])
 	Button* pressedButton = NULL;
 	DNDButton* draggedButton = NULL;
 	int mouseX = 0, mouseY = 0;
+	int tempX = 0, tempY = 0;
 
 	while (true)
 	{
@@ -108,6 +109,8 @@ int main(int argc, char* argv[])
 						break;
 					}
 				}
+				tempX = mouseX;
+				tempY = mouseY;
 				if (draggedButton == NULL) //мы же не хотим нажать на передвигаемую кнопку И кнопку за ней?
 				{
 					for (auto &i : mainWindow.buttons) //находим нажатую кнопку, перерисовываем все кнопки; можно будет оптимизировать
@@ -124,12 +127,28 @@ int main(int argc, char* argv[])
 
 			if (windowEvent.type == SDL_MOUSEMOTION)
 			{
+				SDL_GetMouseState(&mouseX, &mouseY);
 				if (draggedButton != NULL)
 				{
 					SDL_GetMouseState(&mouseX, &mouseY);
 					draggedButton->Move(mouseX, mouseY);
+
+
+					
+					
+
 					RedrawMainWindow();
+
+			//		SDL_SetRenderDrawColor(mainRender, 0xFF, 0x00, 0x00, SDL_ALPHA_OPAQUE);
+			//		SDL_RenderClear(mainRender);
+					SDL_SetRenderDrawColor(mainRender, 0x00, 0xFF, 0x00, SDL_ALPHA_OPAQUE);
+					SDL_RenderDrawLine(mainRender, tempX, tempY, mouseX, mouseY);
+					SDL_RenderPresent(mainRender);
+
 				}
+				
+				
+				
 			}
 
 			if (windowEvent.type == SDL_MOUSEBUTTONUP) //нам нужно обновлять графику кнопок только когда мы на чё-то нажали
