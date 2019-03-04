@@ -1,60 +1,59 @@
+#include "ResourceManager.h"
 #include "UserInterface.h"
 #include "Button.h"
-#include "DNDButton.h"
 
 #include <iostream>
 #include <SDL.h>
 #include <vector>
+#include <algorithm>
 
 const int WIDTH = 800, HEIGHT = 600;
 
 struct mainWindow
 {
+	ResourceManager* _rm;
 	SDL_Window* _window;
+	SDL_Renderer* _renderer;
 	Uint32 userDefinedEvent;
-	std::vector<Button> buttons;
-	std::vector<DNDButton> dndButtons;
-	std::vector<InterfaceElement> images;
+	std::vector<UIObject*> elements;
+	std::vector<Button*> buttons;
+	std::vector<Image*> images;
+	//////////////
+
 }mainWindow;
 
 void SetUpMainWindow()
 {
-	mainWindow.userDefinedEvent = SDL_RegisterEvents(1); //сука блять где комменты ñîçäà¸ì îïðåäåë¸ííîå ïîëüçîâàòåëåì ñîáûòèå è ñîõðàíÿåì åãî òèï, ÷òîáû ïîòîì èñïîëüçîâàòü â êíîïêàõ.
 
-	mainWindow.buttons.push_back(Button(mainWindow._window)); //ñîçäà¸ì âñå êíîïêè
-	mainWindow.buttons.push_back(Button(mainWindow._window, 200, 0));
+	
+	mainWindow.userDefinedEvent = SDL_RegisterEvents(1); //������ ����������� ������������� ������� � ��������� ��� ���, ����� ����� ������������ � �������.
 
-	mainWindow.buttons[0].setMainFunction("one", mainWindow.userDefinedEvent);
-	mainWindow.buttons[1].setMainFunction("one", mainWindow.userDefinedEvent);
+	mainWindow._renderer = SDL_GetRenderer(mainWindow._window);
+	mainWindow._rm = new ResourceManager(mainWindow._renderer);
+	mainWindow.buttons.push_back(new Button(mainWindow._renderer, mainWindow._rm->LoadImage("Button.bmp"), 0, 0, 100, 100));
+	mainWindow.images.push_back(new Image(mainWindow._renderer, mainWindow._rm->LoadImage("TheSun.bmp"), 300, 300, 300, 300));
+	mainWindow.elements.push_back((UIObject*)(mainWindow.buttons[0]));
+	mainWindow.elements.push_back((UIObject*)(mainWindow.images[0]));
+	mainWindow.buttons[0]
+->AddPressedImage(mainWindow._rm->LoadImage("Button_pressed.bmp"));
+	
 
-	mainWindow.dndButtons.push_back(DNDButton(mainWindow._window, 300, 0));
-	mainWindow.dndButtons.push_back(DNDButton(mainWindow._window, 500, 0));
 
-	mainWindow.images.push_back(InterfaceElement(mainWindow._window, 300, 300, 200, 200, "TheSun.bmp"));
 }
 
 void RedrawMainWindow()
 {
-	SDL_Surface* _screenSurface = SDL_GetWindowSurface(mainWindow._window);
-	SDL_FillRect(_screenSurface, NULL, SDL_MapRGB(_screenSurface->format, 0xFF, 0xFF, 0xFF));
+	SDL_SetRenderDrawColor(mainWindow._renderer, 0xFF, 0xFF, 0xFF, SDL_ALPHA_OPAQUE);
+	SDL_RenderClear(mainWindow._renderer);
 
-	for (auto i : mainWindow.images)
+	for (auto &i : mainWindow.elements)
 	{
-		i.Draw();
-	}
-
-	for (auto i : mainWindow.buttons)
-	{
-		i.Update();
-	}
-
-	for (auto i : mainWindow.dndButtons) //îáíîâëÿåì ïåðåäâèãàåìûå êíîïêè ïîâåðõ ñòàòè÷íûõ
-	{
-		i.Update();
+		i->Draw();
 	}
 
 
-	SDL_UpdateWindowSurface(mainWindow._window);
+	SDL_RenderPresent(mainWindow._renderer);
+	
 }
 
 int main(int argc, char* argv[])
@@ -68,7 +67,6 @@ int main(int argc, char* argv[])
 	SDL_Renderer *mainRender = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
 
-
 	if (window == NULL)
 	{
 		std::cout << "Could not create window: " << SDL_GetError() << std::endl;
@@ -78,12 +76,11 @@ int main(int argc, char* argv[])
 	mainWindow._window = window;
 
 	SetUpMainWindow();
+
 	RedrawMainWindow();
 
 	SDL_Event windowEvent;
 
-	Button* pressedButton = NULL;
-	DNDButton* draggedButton = NULL;
 	int mouseX = 0, mouseY = 0;
 
 	while (true)
@@ -97,65 +94,36 @@ int main(int argc, char* argv[])
 
 			if (windowEvent.type == SDL_MOUSEBUTTONDOWN)
 			{
-				SDL_GetMouseState(&mouseX, &mouseY);
+				for (auto &i : mainWindow.buttons)
+					i->CheckIfClicked();
+				for (auto &i : mainWindow.elements)
+				{
+					i->Update();
 
-				for (auto &i : mainWindow.dndButtons) //íàõîäèì íàæàòóþ ïåðåòàñêèâàåìóþ, ïåðåðèñîâûâàåì âñå êíîïêè; ìîæíî áóäåò îïòèìèçèðîâàòü
-				{
-					if (i.CheckIfClicked(mouseX, mouseY))
-					{
-						draggedButton = &i;
-						draggedButton->RememberOffset(mouseX, mouseY);
-						break;
-					}
 				}
-				if (draggedButton == NULL) //ìû æå íå õîòèì íàæàòü íà ïåðåäâèãàåìóþ êíîïêó È êíîïêó çà íåé?
-				{
-					for (auto &i : mainWindow.buttons) //íàõîäèì íàæàòóþ êíîïêó, ïåðåðèñîâûâàåì âñå êíîïêè; ìîæíî áóäåò îïòèìèçèðîâàòü
-					{
-						if (i.CheckIfClicked(mouseX, mouseY))
-						{
-							pressedButton = &i;
-							break;
-						}
-					}
-				}
+
 				RedrawMainWindow();
 			}
 
 			if (windowEvent.type == SDL_MOUSEMOTION)
 			{
-				if (draggedButton != NULL)
-				{
-					SDL_GetMouseState(&mouseX, &mouseY);
-					draggedButton->Move(mouseX, mouseY);
-					RedrawMainWindow();
-				}
+				RedrawMainWindow();
 			}
 
 			if (windowEvent.type == SDL_MOUSEBUTTONUP) //íàì íóæíî îáíîâëÿòü ãðàôèêó êíîïîê òîëüêî êîãäà ìû íà ÷¸-òî íàæàëè
 			{
-				if (pressedButton != NULL)
+				for (auto &i : mainWindow.buttons)
+					i->Unclick();
+				for (auto &i : mainWindow.elements)
 				{
-					pressedButton->Unclick();
-					pressedButton = NULL;
-				}
-				if (draggedButton != NULL)
-				{
-					draggedButton->Unclick();
-					draggedButton = NULL;
+					i->Update();
 				}
 				RedrawMainWindow();
 			}
 
 			if (windowEvent.type == mainWindow.userDefinedEvent)
 			{
-				if (windowEvent.user.code == mainWindow.buttons[0].GetCode())
-				{
-					SDL_ShowSimpleMessageBox(NULL, "Kondrat lox", "Nazhata pervaya knopka", mainWindow._window);
-					continue;
-				}
-				SDL_ShowSimpleMessageBox(NULL, "Kondrat lox", "Nazhata knopka", mainWindow._window);
-				
+
 			}
 
 		}

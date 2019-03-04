@@ -1,15 +1,13 @@
-#include "DNDButton.h"
+#include "Button.h"
 
-DNDButton::DNDButton(SDL_Window* _mainWindow, int posX, int posY, int width, int height, const char* filename) : Button(_mainWindow, posX, posY, width, height, filename) {};
-
-void DNDButton::RememberOffset(int mouseX, int mouseY)
+void DNDButton::RememberOffset(int X, int Y)
 {
-	offX = Pos.x - mouseX;
-	offY = Pos.y - mouseY;
+	offX = Pos.x - X;
+	offY = Pos.y - Y;
 }
 
-void DNDButton::Move(int mouseX, int mouseY)
+void DNDButton::Move(int X, int Y)
 {
-	Pos.x = mouseX + offX;
-	Pos.y = mouseY + offY;
+	Pos.x = X + offX;
+	Pos.y = Y + offY;
 }

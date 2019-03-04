@@ -1,26 +1,27 @@
 #include "Button.h"
 
-Button::Button(SDL_Window* _mainWindow, int posX, int posY, int width, int height, const char* filename) : InterfaceElement(_mainWindow, posX, posY, width, height, filename), isClicked(false)
+Button::Button(SDL_Renderer* _mainRenderer, SDL_Texture* _textur, int posX, int posY, int width, int height) : Image(_mainRenderer, _textur, posX, posY, width, height), isClicked(false)
 {
-	_textureSurfaceVariants[0] = _textureSurface;
+	_textureVariants[0] = _texture;
 
 	myCode = -1;
 
-	_textureSurfaceVariants[1] = SDL_LoadBMP(((std::string(filename).substr(0, std::string(filename).length() - 4)) + std::string("_pressed.bmp")).c_str()); //Button.bmp -> Button_pressed.bmp
-	if (_textureSurfaceVariants[1] == NULL) std::cout << "Could not load the pressed version of " << filename << "!\n";
-
 }
-
 int Button::code = 0;
 
 void Button::Update() //Обработчик событий для кнопки.
 {
-	//
-	//здесь обрабатываем события для разных кнопок.
-	//
+
+
 	if (isClicked == true)
 	{
-		_textureSurface = _textureSurfaceVariants[1];
+		_texture = _textureVariants[1];
+		isClicked = false;
+	}
+
+	else
+	{
+		_texture = _textureVariants[0];
 	}
 
 	if (mainFunction == "one" && isClicked == true)
@@ -31,19 +32,28 @@ void Button::Update() //Обработчик событий для кнопки.
 		SDL_PushEvent(&tempEvent);
 		isClicked = false;
 	}
-
-	Draw();
 }
 
 
-bool Button::CheckIfClicked(int mouseX, int mouseY)
+bool Button::CheckIfClicked()
 {
-	if ((mouseX > Pos.x) && (mouseX < Pos.x + Pos.w) && (mouseY > Pos.y) && (mouseY < Pos.y + Pos.h))
-	{
-		std::cout << "Detected a click at (" << mouseX << "," << mouseY << ")!\n";
-		isClicked = true;
-	}
+	int mouseX = 0, mouseY = 0;
+	isClicked = false;
+
+	SDL_GetMouseState(&mouseX, &mouseY);
+	
+		if ((mouseX > Pos.x) && (mouseX < Pos.x + Pos.w) && (mouseY > Pos.y) && (mouseY < Pos.y + Pos.h))
+		{
+			std::cout << "Detected a click at (" << mouseX << "," << mouseY << ")!\n";
+			isClicked = true;
+		}
+	
 	return isClicked;
+}
+
+void Button::AddPressedImage(SDL_Texture* _texture)
+{
+	_textureVariants[1] = _texture;
 }
 
 int Button::GetCode()
@@ -61,4 +71,15 @@ void Button::setMainFunction(std::string mainFunctions, Uint32 eventType)
 void Button::Unclick()
 {
 	isClicked = false;
+}
+
+void DNDButton::RememberOffset(int X, int Y)
+{
+	offX = Pos.x - X; offY = Pos.y - Y;
+}
+
+void DNDButton::Move(int X, int Y)
+{
+	int mouseX = 0, mouseY = 0;
+	SDL_GetMouseState(&mouseX, &mouseY);
 }

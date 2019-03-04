@@ -1,15 +1,18 @@
 #pragma once
 #include <iostream>
 #include <SDL.h>
+#include "UIObject.h"
 
-class InterfaceElement
+
+class Image: public UIObject
 {
 protected:
 	SDL_Rect Pos;
-	SDL_Surface* _textureSurface; //картинка элемента интерфейса
-	SDL_Window* _parentWindow; //наша кнопка ¬—≈√ƒј будет принадлежать какому-то окну, пусть метод кнопки сам рисует еЄ
+	SDL_Texture* _texture; //картинка элемента интерфейса
+	SDL_Renderer* _mainRenderer; //наша кнопка ¬—≈√ƒј будет принадлежать какому-то окну, пусть метод кнопки сам рисует еЄ
 public:
-	InterfaceElement(SDL_Window* pWindow, int posX, int posY, int width, int height, const char* filename);
+	Image(SDL_Renderer* _pRenderer, SDL_Texture* _texture, int posX, int posY, int width, int height);
 	void Update();
 	void Draw();
+
 };
